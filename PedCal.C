@@ -15,7 +15,7 @@
 
 #include <TCanvas.h>
 
-Int_t create_pedDB=1;
+Int_t create_pedDB=0;
 Double_t fitf(Double_t *v, Double_t *par)
 {
   	Double_t arg = 0;
@@ -122,12 +122,12 @@ void PedCal()
 		
 		for(int ij=0;ij<xstrip[detnumber];ij++)
 	    	{
-	       		hx[detnumber].push_back(new TH1F(Form("hx_%d_%d",detnumber+1,ij+1),Form("Det %d Pedestal x_%d",detnumber+1,ij+1),3000*6,0,3000*6));
+	       		hx[detnumber].push_back(new TH1F(Form("hx_%d_%d",detnumber+1,ij+1),Form("Det %d Pedestal x_%d",detnumber+1,ij+1),3000,0,3000));
 	    	}	 
 		
 		for(int ij=0;ij<ystrip[detnumber];ij++)
 	    	{
-	       		hy[detnumber].push_back(new TH1F(Form("hy_%d_%d",detnumber+1,ij+1),Form("Det %d Pedestal y_%d",detnumber+1,ij+1),3000*6,0,3000*6));
+	       		hy[detnumber].push_back(new TH1F(Form("hy_%d_%d",detnumber+1,ij+1),Form("Det %d Pedestal y_%d",detnumber+1,ij+1),3000,0,3000));
 	    	}	 
 	}
 	    
@@ -149,7 +149,7 @@ void PedCal()
 	    			{
 	    				dummy += xadc[detnumber][ik][pq];
 	    			}
-	    			//dummy = dummy/6.;
+	    			dummy = dummy/6.;
 	    			hx[detnumber][pq]->Fill(dummy);
 			}
 	    		for(int pq=0;pq<ystrip[detnumber];pq++)
@@ -160,7 +160,7 @@ void PedCal()
 	    				dummy += yadc[detnumber][ik][pq];
 	    			}
 	    
-				//dummy = dummy/6;
+				dummy = dummy/6;
 	    			hy[detnumber][pq]->Fill(dummy);
 	    		}
 	    	}
@@ -206,24 +206,24 @@ void PedCal()
     		int xcanvasIndex=0;
 		for(int ij=0; ij<xstrip[detnumber];ij++)
     		{
-    			hx[detnumber][ij]->GetXaxis()->SetRangeUser(1,3000*6);
+    			hx[detnumber][ij]->GetXaxis()->SetRangeUser(1,3000);
 	    		xcentroid=(hx[detnumber][ij]->GetMaximumBin()-1);
     			xamp=(hx[detnumber][ij]->GetBinContent(xcentroid));
-    			xsigma=200;
-	    		TF1 *func = new TF1("fit",fitf,xcentroid-400,xcentroid+400,3);
-    			/*if(ij%25==0)
+    			xsigma=20;
+	    		TF1 *func = new TF1("fit",fitf,xcentroid-150,xcentroid+150,3);
+    			/*if(ij%125==0)
 			cout<<"  xch  "<<ij<<" xcentroid  "<<xcentroid[ij]<<
 	    		"  xamp "<<xamp[ij]<<"  xsigma  "<<xsigma[ij]<<endl;*/
     			func->SetParameters(xamp,xcentroid,xsigma);
     			func->SetParNames("Constant","Mean_value","Sigma");
-	    		hx[detnumber][ij]->Fit("fit","RQ0","",xcentroid-400,xcentroid+400);
+	    		hx[detnumber][ij]->Fit("fit","RQ0","",xcentroid-100,xcentroid+100);
     
-			fh_out<<fixed<<setprecision(2)<<func->GetParameter(1)/6.<<"\t"<<fixed<<setprecision(2)<<fabs(func->GetParameter(2))/sqrt(6)<<endl;
+			fh_out<<fixed<<setprecision(2)<<func->GetParameter(1)<<"\t"<<fixed<<setprecision(2)<<fabs(func->GetParameter(2))*sqrt(6)<<endl;
 			xped[detnumber][ij]=func->GetParameter(1);
 			xrms[detnumber][ij]=fabs(func->GetParameter(2));
-    			if(ij%25==0)
+    			if(ij%125==0)
 			{
-				cout<<"After fitting for Det "<<detnumber<<"  xcentroid "<<func->GetParameter(1)<<"  xamplitude  "<<func->GetParameter(0)<<" xsigma  "<< func->GetParameter(2)<<endl;
+				cout<<"After fitting for Det "<<detnumber<<"  xcentroid "<<func->GetParameter(1)<<"  xamplitude  "<<func->GetParameter(0)<<" xsigma  "<< func->GetParameter(2)*sqrt(6)<<endl;
 	    			plotx[detnumber].push_back(new TCanvas(Form("xplot_%d_%d",detnumber+1,ij+1),Form("Det %d Ped x strip %d",detnumber+1,ij+1),800,800));
 	    			plotx[detnumber][xcanvasIndex]->SetLogy();
 		    		hx[detnumber][ij]->GetXaxis()->SetTitleSize(0.04);
@@ -240,23 +240,23 @@ void PedCal()
 	    	int ycanvasIndex=0;
     		for(int ij=0; ij<ystrip[detnumber];ij++)
 	    	{
-    			hy[detnumber][ij]->GetXaxis()->SetRangeUser(1,3000*6);
+    			hy[detnumber][ij]->GetXaxis()->SetRangeUser(1,3000);
     			ycentroid=hy[detnumber][ij]->GetMaximumBin()-1;
 	    		yamp=hy[detnumber][ij]->GetBinContent(ycentroid);
-    			ysigma=200;
-    			TF1 *func1 = new TF1("fit1",fitf,ycentroid-400,ycentroid+400,3);
+    			ysigma=20;
+    			TF1 *func1 = new TF1("fit1",fitf,ycentroid-150,ycentroid+150,3);
 	    		/*if(ij%50==0)
     			cout<<"  ych  "<<ij<<" ycentroid  "<<ycentroid[ij]<<
 	        	"  yamp "<<yamp[ij]<<"  ysigma  "<<ysigma[ij]<<endl;*/
 	    		func1->SetParameters(yamp,ycentroid,ysigma);
     			func1->SetParNames("Constant","Mean_value","Sigma");
-			hy[detnumber][ij]->Fit("fit1","RQ0","",ycentroid-400,ycentroid+400);
+			hy[detnumber][ij]->Fit("fit1","RQ0","",ycentroid-100,ycentroid+100);
     			//cout<<"After fitting  centroid "<<func1->GetParameter(1)<<"  yamplitude  "<<func1->GetParameter(0)<<" ysigma  "<< func1->GetParameter(2)<<endl;
-    			fh_out<<fixed<<setprecision(2)<<func1->GetParameter(1)/6.<<"\t"<<fixed<<setprecision(2)<<fabs(func1->GetParameter(2))/sqrt(6)<<endl;
+    			fh_out<<fixed<<setprecision(2)<<func1->GetParameter(1)<<"\t"<<fixed<<setprecision(2)<<fabs(func1->GetParameter(2))*sqrt(6)<<endl;
 			yped[detnumber][ij]=func1->GetParameter(1);
 			yrms[detnumber][ij]=fabs(func1->GetParameter(2));
 			//fh_out1<<xstripID[detnumber][ij]<<"\t"<<func1->GetParameter(1)<<"\t"<<fabs(func1->GetParameter(2))<<endl;
-		    	if(ij%25==0)
+		    	if(ij%125==0)
 			{
 	    			cout<<"After fitting for Det "<<detnumber<<" centroid "<<func1->GetParameter(1)<<"  yamplitude  "<<func1->GetParameter(0)<<" ysigma  "<< func1->GetParameter(2)<<endl;
 	    			ploty[detnumber].push_back(new TCanvas(Form("Det %d yplot_%d",detnumber+1,ij+1),Form("Det %d Ped y strip %d",detnumber+1,ij+1),800,800));
@@ -286,8 +286,8 @@ void PedCal()
 				fh_out1<<"\\"<<endl;
 				if(create_pedDB==1)fh_out2<<"\\"<<endl;
 			}
-			fh_out1<<fixed<<setprecision(0)<<xstripID[detnumber][ij]<<" "<<fixed<<setprecision(2)<<xped[detnumber][ij]/6.<<" ";
-			if(create_pedDB==1)fh_out2<<fixed<<setprecision(0)<<xstripID[detnumber][ij]<<" "<<fixed<<setprecision(2)<<xped[detnumber][ij]/6.<<" ";
+			fh_out1<<fixed<<setprecision(0)<<xstripID[detnumber][ij]<<" "<<fixed<<setprecision(2)<<xped[detnumber][ij]<<" ";
+			if(create_pedDB==1)fh_out2<<fixed<<setprecision(0)<<xstripID[detnumber][ij]<<" "<<fixed<<setprecision(2)<<xped[detnumber][ij]<<" ";
 		}
 		fh_out1<<Form("\nsbs.gems.x%d.rms = ",detnumber+1);
 		if(create_pedDB==1)fh_out2<<Form("\nsbs.gems.x%d.rms = ",detnumber+1);
@@ -298,8 +298,8 @@ void PedCal()
 				fh_out1<<"\\"<<endl;
 				if(create_pedDB==1)fh_out2<<"\\"<<endl;
 			}
-			fh_out1<<fixed<<setprecision(0)<<xstripID[detnumber][ij]<<" "<<fixed<<setprecision(2)<<xrms[detnumber][ij]/sqrt(6)<<" ";
-			if(create_pedDB==1)fh_out2<<fixed<<setprecision(0)<<xstripID[detnumber][ij]<<" "<<fixed<<setprecision(2)<<xrms[detnumber][ij]/sqrt(6)<<" ";
+			fh_out1<<fixed<<setprecision(0)<<xstripID[detnumber][ij]<<" "<<fixed<<setprecision(2)<<xrms[detnumber][ij]*sqrt(6)<<" ";
+			if(create_pedDB==1)fh_out2<<fixed<<setprecision(0)<<xstripID[detnumber][ij]<<" "<<fixed<<setprecision(2)<<xrms[detnumber][ij]*sqrt(6)<<" ";
 		}
 		fh_out1<<Form("\nsbs.gems.y%d.ped = ",detnumber+1);
 		if(create_pedDB==1)fh_out2<<Form("\nsbs.gems.y%d.ped = ",detnumber+1);
@@ -310,8 +310,8 @@ void PedCal()
 				fh_out1<<"\\"<<endl;
 				if(create_pedDB==1)fh_out2<<"\\"<<endl;
 			}
-			fh_out1<<fixed<<setprecision(0)<<ystripID[detnumber][ij]<<" "<<fixed<<setprecision(2)<<yped[detnumber][ij]/6.<<" ";
-			if(create_pedDB==1)fh_out2<<fixed<<setprecision(0)<<ystripID[detnumber][ij]<<" "<<fixed<<setprecision(2)<<yped[detnumber][ij]/6.<<" ";
+			fh_out1<<fixed<<setprecision(0)<<ystripID[detnumber][ij]<<" "<<fixed<<setprecision(2)<<yped[detnumber][ij]<<" ";
+			if(create_pedDB==1)fh_out2<<fixed<<setprecision(0)<<ystripID[detnumber][ij]<<" "<<fixed<<setprecision(2)<<yped[detnumber][ij]<<" ";
 		}
 		fh_out1<<Form("\nsbs.gems.y%d.rms = ",detnumber+1);
 		if(create_pedDB==1)fh_out2<<Form("\nsbs.gems.y%d.rms = ",detnumber+1);
@@ -323,7 +323,7 @@ void PedCal()
 				if(create_pedDB==1)fh_out2<<"\\"<<endl;
 			}
 			fh_out1<<fixed<<setprecision(0)<<ystripID[detnumber][ij]<<" "<<fixed<<setprecision(2)<<yrms[detnumber][ij]/sqrt(6)<<" ";
-			if(create_pedDB==1)fh_out2<<fixed<<setprecision(0)<<ystripID[detnumber][ij]<<" "<<fixed<<setprecision(2)<<yrms[detnumber][ij]/sqrt(6)<<" ";
+			if(create_pedDB==1)fh_out2<<fixed<<setprecision(0)<<ystripID[detnumber][ij]<<" "<<fixed<<setprecision(2)<<yrms[detnumber][ij]*sqrt(6)<<" ";
 		}
 
 	}

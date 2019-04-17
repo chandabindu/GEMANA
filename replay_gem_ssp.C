@@ -32,7 +32,7 @@ R__ADD_INCLUDE_PATH(../TreeSearch/)
 
 #endif
 
-void replay_gem_ssp(Int_t runnum = 1982, Int_t lastEvent = -1, Int_t segment = -1){
+void replay_gem_ssp(Int_t runnum = 409, Int_t lastEvent = -1, Int_t segment = -1){
 
  // gSystem->Load("../SBS-offline/libsbs.so");
 #ifndef USE_TREESEARCH
@@ -82,7 +82,7 @@ void replay_gem_ssp(Int_t runnum = 1982, Int_t lastEvent = -1, Int_t segment = -
   // then it means use the specified segmented file. Otherwise it won't do
   // anything.
   const char *segPost = (segment<0 ? "" : Form(".%d",segment));
-  TString inFile = "test_88.dat";
+  TString inFile = Form("/home/chad/data/test_%d.dat",runnum);
 
   analyzer->SetVerbosity(2);
   analyzer->SetMarkInterval(1000);
@@ -99,8 +99,8 @@ void replay_gem_ssp(Int_t runnum = 1982, Int_t lastEvent = -1, Int_t segment = -
   //THaRun* run = new THaRun(TString::Format("data/fadc_%d.dat.0",runnum) );
   THaRun* run = new THaRun(inFile.Data());
   //run->SetFirstEvent(2834);
+  run->SetLastEvent(-1);
   //run->SetLastEvent(lastEvent);
-  run->SetLastEvent(100);
 
   run->SetDataRequired(THaRunBase::kDate);
   run->SetDate(TDatime());

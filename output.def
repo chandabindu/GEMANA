@@ -1,5 +1,12 @@
-#block sbs.gems.*
+# block sbs.gems.*
 block sbs.tr.*
+block sbs.gems.[xy][123].nhits
+block sbs.gems.[xy][123].hit.*
+block sbs.gems.[xy][123].strip.*
+block sbs.gems.[xy][123].coord.*
+block sbs.gems.[xy].nroads
+block sbs.gems.[xy].ngood
+block sbs.gems.[xy].rd.*
 block sbs.sbuscint.hadc0
 block sbs.sbuscint.hadc1
 block sbs.sbuscint.hadc2
