@@ -16,6 +16,20 @@
 ## chanmap = ... # see channel map below for structure
 ## detmap = .... # crate slot first_chan last_chan plane
 
+sbs.gems.planeconfig = x1 y1 x2 y2 x3 y3 x4 y4 
+sbs.gems.x.angle = 0
+sbs.gems.y.angle = 90
+
+sbs.gems.do_eltracksel = 0
+sbs.gems.maxthreads = 1
+sbs.gems.disable_tracking = 0
+sbs.gems.disable_finetrack = 1
+sbs.gems.3d_disable_chi2 = 0
+sbs.gems.3d_ampcorr_maxmiss = 1
+sbs.gems.3d_ampcorr_nsigma = 1
+sbs.gems.3d_ampcorr_minADC = 50
+sbs.gems.3d_chi2_conflevel = 1e-06
+sbs.gems.3d_maxmiss = 1
 ## Number of maximum samples on the plane
 sbs.gems.x1.maxsamp = 6
 sbs.gems.y1.maxsamp = 6
@@ -37,36 +51,42 @@ sbs.gems.x4.pedestal_sigma = 2
 sbs.gems.y4.pedestal_sigma = 2
 
 ##
-sbs.gems.x1.tmp_pedestal_rms = 70
-sbs.gems.x2.tmp_pedestal_rms = 70
-sbs.gems.x3.tmp_pedestal_rms = 70
-sbs.gems.x4.tmp_pedestal_rms = 70
+sbs.gems.x1.tmp_pedestal_rms = 60
+sbs.gems.x2.tmp_pedestal_rms = 60
+sbs.gems.x3.tmp_pedestal_rms = 60
+sbs.gems.x4.tmp_pedestal_rms = 60
 sbs.gems.y1.tmp_pedestal_rms = 40
 sbs.gems.y2.tmp_pedestal_rms = 40
 sbs.gems.y3.tmp_pedestal_rms = 40
 sbs.gems.y4.tmp_pedestal_rms = 40
 
 
-sbs.gems.x.search_depth = 7
-sbs.gems.y.search_depth = 7
-sbs.gems.planeconfig = x1 y1 x2 y2 x3 y3 x4 y4
+sbs.gems.x.search_depth = 8
+sbs.gems.y.search_depth = 9
 sbs.gems.mapping = mpd-apv-nossp
 sbs.gems.strip.pitch = 0.000400
 sbs.gems.maxmiss = 1
 sbs.gems.maxclustsiz = 15
-sbs.gems.split.frac = 0.3
-sbs.gems.minPeakADC = 600
-sbs.gems.adc.min = 300
+sbs.gems.split.frac = 0.1
+sbs.gems.minPeakADC = 100
+sbs.gems.adc.min = 50
+sbs.gems.maxpat = 10000
+sbs.gems.chi2_conflevel = 1e-06
+sbs.gems.disable_chi2 = 0
+sbs.gems.do_noise = 0
+sbs.gems.check_pulse_shape = 0
+sbs.gems.do_histos = 1
 
 ## Allow these types of hits (i.e. which planes are allowed, defined as
 ## plane0_allowed<<3*0|plane1_allowed<<3*1|plane_2_allowed<<3*2 etc...
 ## where plane0 is x1+y1, plane1 is x2+y2, etc...
 #sbs.gems.module_order = 9 65 72 73
 sbs.gems.module_order = 73 521 577 584 585
+#sbs.gems.module_order = 0
 
 #sbs.gems.cratemap = 3 0
 
-sbs.gems.xp.res = 500e-6
+sbs.gems.xp.res = 200e-6
 
 #sbs.gems.x.position = 0.0 0.0 0.0
 #sbs.gems.x.size     = 0.1 0.2 0.001
@@ -85,16 +105,19 @@ sbs.gems.x1.partner = y1
 sbs.gems.x1.position = 0.0 0.0 0.0
 sbs.gems.x1.size     = 0.1 0.2 0.001
 sbs.gems.x1.strip.pos = -0.05
+sbs.gems.x1.1.offset = 0
 #sbs.gems.x1.mapping = mpd-apv
 
 sbs.gems.y1.partner = x1
 sbs.gems.y1.type = y
 sbs.gems.y1.d0 = 0
 sbs.gems.y1.nstrips = 512
-sbs.gems.y1.position = 0.0. 0.0 0.0
+sbs.gems.y1.position = 0.0 0.0 0.0
 sbs.gems.y1.size     = 0.1 0.2 0.001
 sbs.gems.y1.strip.pos = -0.1
-#sbs.gems.y1.mapping = mpd-apv
+sbs.gems.y1.1.offset = 0
+
+
 sbs.gems.y1.chanmap = \
 3 0 5 0 0 16 0 0 \
 3 0 5 0 1 17 1 0 \
@@ -110,6 +133,7 @@ sbs.gems.x2.position = 0.0 0.0 0.0
 sbs.gems.x2.size     = 0.1 0.2 0.001
 sbs.gems.x2.nstrips = 256
 sbs.gems.x2.strip.pos = -0.05
+sbs.gems.x2.1.offset = -4.0e-4
 
 #crate slot mpd_id gem_id adc_id i2c pos invert
 sbs.gems.x2.chanmap = \
@@ -125,6 +149,7 @@ sbs.gems.y2.size     = 0.1 0.2 0.001
 sbs.gems.y2.nstrips = 512
 sbs.gems.y2.strip.pos = -0.1
 sbs.gems.y2.type = y
+sbs.gems.y2.1.offset = -1.9e-4
 
 sbs.gems.y2.chanmap = \
 3 0 5 1 8 0 0 0 \
@@ -141,6 +166,7 @@ sbs.gems.x3.position = 0.0 0.0 0.0
 sbs.gems.x3.size     = 0.1 0.2 0.001
 sbs.gems.x3.nstrip = 256
 sbs.gems.x3.strip.pos = -0.05
+sbs.gems.x3.1.offset = -1.7e-3
 
 #crate slot mpd_id gem_id adc_id i2c pos invert
 sbs.gems.x3.chanmap = \
@@ -156,6 +182,7 @@ sbs.gems.y3.position = 0.0 0.0 0.0
 sbs.gems.y3.size     = 0.1 0.2 0.001
 sbs.gems.y3.nstrip = 512
 sbs.gems.y3.strip.pos = -0.1
+sbs.gems.y3.1.offset = 4.4e-4
 
 sbs.gems.y3.chanmap = \
 3 0 8 2 0 16 0 0 \
@@ -172,6 +199,7 @@ sbs.gems.x4.position = 0.0 0.0 0.0
 sbs.gems.x4.size     = 0.1 0.2 0.001
 sbs.gems.x4.nstrip = 256
 sbs.gems.x4.strip.pos = -0.05
+sbs.gems.x4.1.offset = 4.8e-4
 
 #crate slot mpd_id gem_id adc_id i2c pos invert
 sbs.gems.x4.chanmap = \
@@ -187,6 +215,7 @@ sbs.gems.y4.position = 0.0 0.0 0.0
 sbs.gems.y4.size     = 0.1 0.2 0.001
 sbs.gems.y4.nstrip = 512
 sbs.gems.y4.strip.pos = -0.1
+sbs.gems.y4.1.offset = 1.0e-5
 
 sbs.gems.y4.chanmap = \
 3 0 8 3 8 8 0 0 \
@@ -195,6 +224,7 @@ sbs.gems.y4.chanmap = \
 3 0 8 3 11 11 3 0
 sbs.gems.y4.detmap =
   3 0 2056 2059 7
+
 
 
 sbs.gems.x1.ped = \
